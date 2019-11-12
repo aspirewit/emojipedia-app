@@ -1,0 +1,3 @@
+[submodule "submodules/emojipedia-dataset"]
+	path = submodules/emojipedia-dataset
+	url = https://github.com/aspirewit/emojipedia-dataset.git
