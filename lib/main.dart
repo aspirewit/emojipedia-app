@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onLongPress: () {
             Clipboard.setData(new ClipboardData(text: character));
             final snackBar = SnackBar(
-              content: Text('Copied successfully: ${character}'),
+              content: Text('Copied successfully: $character'),
               duration: Duration(seconds: 1),
             );
             Scaffold.of(context).showSnackBar(snackBar);
