@@ -35,7 +35,7 @@ Future<List<Emoji>> findAllEmojis(String keyword) async {
   final maps = await db.query(
     tableName,
     columns: [characterColumn, nameColumn, descriptionColumn],
-    where: '$nameColumn LIKE ?',
+    where: '$descriptionColumn LIKE ?',
     whereArgs: ['%$keyword%'],
     limit: 120,
   );
