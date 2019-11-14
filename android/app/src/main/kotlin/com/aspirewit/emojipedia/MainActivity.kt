@@ -1,4 +1,5 @@
-package com.example.emojipedia
+
+package com.aspirewit.emojipedia
 
 import android.os.Bundle
 
