@@ -25,11 +25,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final emojiRepository = EmojiRepository();
   final controller = TextEditingController();
+
   bool clearingButtonVisible = false;
   List<Emoji> emojiList = [];
 
   void initState() {
+    emojiRepository.open().then((_) {});
+
     controller.addListener(() {
       final text = controller.text.toLowerCase();
       final visible = text.length > 0;
@@ -45,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void dispose() {
     controller.dispose();
+    emojiRepository.close().then((_) {});
     super.dispose();
   }
 
@@ -64,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return;
           }
 
-          final newEmojiList = await findAllEmojis(text);
+          final newEmojiList = await emojiRepository.findAllEmojis(text);
           setState(() {
             emojiList = newEmojiList;
           });
