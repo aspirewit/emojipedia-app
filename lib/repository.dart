@@ -27,7 +27,7 @@ Future<Database> _getConnection() async {
 
 Future<List<Emoji>> findAllEmojis(String keyword) async {
   final db = await _getConnection();
-  final tableName = 'emojis';
+  final tableName = 'emojis_fts5';
   final characterColumn = 'emoji_character';
   final nameColumn = 'emoji_name';
   final descriptionColumn = 'emoji_description';
@@ -35,8 +35,8 @@ Future<List<Emoji>> findAllEmojis(String keyword) async {
   final maps = await db.query(
     tableName,
     columns: [characterColumn, nameColumn, descriptionColumn],
-    where: '$descriptionColumn LIKE ?',
-    whereArgs: ['%$keyword%'],
+    where: '$characterColumn MATCH(?) OR $nameColumn MATCH(?) OR $descriptionColumn MATCH(?)',
+    whereArgs: [keyword, keyword, keyword],
     limit: 120,
   );
   db.close();
