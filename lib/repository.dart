@@ -8,9 +8,9 @@ import 'emoji.dart';
 
 class EmojiRepository {
   final databaseFilename = 'emojipedia-dataset.sqlite';
-  final currentDatabaseVersion = 2;
+  final currentDatabaseVersion = 3;
   final databaseVersionKey = 'databaseVersion';
-  final tableName = 'emojis_fts5';
+  final tableName = Platform.isIOS ? 'emojis_fts5' : 'emojis_fts4';
   final characterColumn = 'emoji_character';
   final nameColumn = 'emoji_name';
   final descriptionColumn = 'emoji_description';
