@@ -25,12 +25,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String keyword = '';
+  final controller = TextEditingController();
+  bool clearingButtonVisible = false;
   List<Emoji> emojiList = [];
+
+  void initState() {
+    controller.addListener(() {
+      final text = controller.text.toLowerCase();
+      final visible = text.length > 0;
+      if (clearingButtonVisible != visible) {
+        setState(() {
+          clearingButtonVisible = visible;
+        });
+      }
+    });
+
+    super.initState();
+  }
+
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return FloatingSearchBar.builder(
+      title: TextFormField(
+        controller: controller,
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration.collapsed(
+          hintText: 'Search emoji',
+        ),
+        autofocus: true,
+        onFieldSubmitted: (value) async {
+          final text = controller.text.toLowerCase();
+          if (text.length < 2) {
+            return;
+          }
+
+          final newEmojiList = await findAllEmojis(text);
+          setState(() {
+            emojiList = newEmojiList;
+          });
+        },
+      ),
       itemCount: emojiList.length,
       itemBuilder: (BuildContext context, int index) {
         final emoji = emojiList[index];
@@ -57,25 +96,18 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         );
       },
-      trailing: IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () async {
-          if (keyword.length < 2) {
-            return;
-          }
+      trailing: clearingButtonVisible ? IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          controller.clear();
 
-          final newEmojiList = await findAllEmojis(keyword);
-          setState(() {
-            emojiList = newEmojiList;
-          });
+          if (emojiList.length > 0) {
+            setState(() {
+              emojiList = [];
+            });
+          }
         },
-      ),
-      onChanged: (String value) {
-        keyword = value;
-      },
-      decoration: InputDecoration.collapsed(
-        hintText: "Search emoji",
-      ),
+      ) : null,
     );
   }
 }
