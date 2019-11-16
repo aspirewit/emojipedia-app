@@ -27,6 +27,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final emojiRepository = EmojiRepository();
   final controller = TextEditingController();
+  final focus = FocusNode();
 
   bool clearingButtonVisible = false;
   List<Emoji> emojiList = [];
@@ -36,12 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     controller.addListener(() {
       final text = controller.text.toLowerCase();
-      final visible = text.length > 0;
-      if (clearingButtonVisible != visible) {
-        setState(() {
-          clearingButtonVisible = visible;
-        });
-      }
+      setState(() {
+        clearingButtonVisible = text.length > 0;
+      });
     });
 
     super.initState();
@@ -58,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return FloatingSearchBar.builder(
       title: TextFormField(
         controller: controller,
+        focusNode: focus,
         textInputAction: TextInputAction.done,
         decoration: InputDecoration.collapsed(
           hintText: 'Search emoji',
@@ -105,12 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
         icon: Icon(Icons.clear),
         onPressed: () {
           controller.clear();
+          FocusScope.of(context).requestFocus(focus);
 
-          if (emojiList.length > 0) {
-            setState(() {
-              emojiList = [];
-            });
-          }
+          setState(() {
+            emojiList = [];
+          });
         },
       ) : null,
     );
