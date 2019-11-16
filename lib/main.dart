@@ -1,3 +1,4 @@
+import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:floating_search_bar/floating_search_bar.dart';
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final controller = TextEditingController();
   final focus = FocusNode();
 
+  bool isSearched = false;
   bool clearingButtonVisible = false;
   List<Emoji> emojiList = [];
 
@@ -70,12 +72,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
           final newEmojiList = await emojiRepository.findAllEmojis(text);
           setState(() {
+            isSearched = true;
             emojiList = newEmojiList;
           });
         },
       ),
-      itemCount: emojiList.length,
+      itemCount: max(emojiList.length, 1),
       itemBuilder: (BuildContext context, int index) {
+        if (emojiList.length == 0) {
+          return ListTile(
+            title: Text(
+              isSearched ? 'No results' : 'Copy emoji by long-press',
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+
         final emoji = emojiList[index];
         final character = emoji.character;
 
@@ -107,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FocusScope.of(context).requestFocus(focus);
 
           setState(() {
+            isSearched = false;
             emojiList = [];
           });
         },
